@@ -1,0 +1,75 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isCoupleMember(coupleId) {
+      return signedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/couples/$(coupleId)).data.memberIds;
+    }
+
+    // Anyone signed in may read a profile (needed to show a partner's name/photo before the
+    // security-sensitive couple relationship is established); only the owner may write it.
+    match /users/{uid} {
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Invite codes are short-lived lookup docs used only during pairing.
+    match /inviteCodes/{code} {
+      allow get: if signedIn();
+      allow create: if signedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/couples/$(request.resource.data.coupleId)).data.memberIds;
+      allow delete: if signedIn();
+      allow update: if false;
+    }
+
+    match /couples/{coupleId} {
+      allow get: if signedIn() && request.auth.uid in resource.data.memberIds;
+      allow create: if signedIn() && request.resource.data.memberIds == [request.auth.uid];
+      allow update: if signedIn() && (
+        request.auth.uid in resource.data.memberIds ||
+        (resource.data.memberIds.size() == 1 &&
+          request.resource.data.memberIds == resource.data.memberIds.concat([request.auth.uid]))
+      );
+      allow delete: if false;
+
+      match /locations/{uid} {
+        allow read: if isCoupleMember(coupleId);
+        allow write: if isCoupleMember(coupleId) && request.auth.uid == uid;
+      }
+
+      match /places/{placeId} {
+        allow read, create, delete: if isCoupleMember(coupleId);
+        allow update: if isCoupleMember(coupleId);
+      }
+
+      match /placeEvents/{eventId} {
+        allow read: if isCoupleMember(coupleId);
+        allow create: if isCoupleMember(coupleId) && request.resource.data.uid == request.auth.uid;
+        allow update, delete: if false;
+      }
+
+      match /moments/{momentId} {
+        allow read: if isCoupleMember(coupleId);
+        allow create: if isCoupleMember(coupleId) && request.resource.data.uid == request.auth.uid;
+        allow update, delete: if isCoupleMember(coupleId) && resource.data.uid == request.auth.uid;
+      }
+
+      match /dailyPrompts/{date} {
+        allow read: if isCoupleMember(coupleId);
+        allow write: if isCoupleMember(coupleId);
+      }
+
+      match /pokes/{pokeId} {
+        allow read: if isCoupleMember(coupleId);
+        allow create: if isCoupleMember(coupleId) && request.resource.data.fromUid == request.auth.uid;
+        allow update, delete: if false;
+      }
+    }
+  }
+}
