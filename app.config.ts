@@ -12,11 +12,7 @@ const config: ExpoConfig = {
     supportsTablet: true,
     bundleIdentifier: "com.huggy.app",
     infoPlist: {
-      NSLocationWhenInUseUsageDescription:
-        "Huggy uses your location to show it to your partner on the live map.",
-      NSLocationAlwaysAndWhenInUseUsageDescription:
-        "Huggy uses your location in the background so your partner can see when you arrive or leave saved places, even when the app is closed.",
-      UIBackgroundModes: ["location", "fetch", "remote-notification"],
+      UIBackgroundModes: ["remote-notification"],
     },
   },
   android: {
@@ -28,39 +24,15 @@ const config: ExpoConfig = {
       monochromeImage: "./assets/android-icon-monochrome.png",
     },
     predictiveBackGestureEnabled: false,
-    permissions: [
-      "ACCESS_COARSE_LOCATION",
-      "ACCESS_FINE_LOCATION",
-      "ACCESS_BACKGROUND_LOCATION",
-      "FOREGROUND_SERVICE",
-      "FOREGROUND_SERVICE_LOCATION",
-      "POST_NOTIFICATIONS",
-    ],
-    config: {
-      googleMaps: {
-        apiKey: process.env.EXPO_PUBLIC_ANDROID_GOOGLE_MAPS_API_KEY ?? "",
-      },
-    },
+    permissions: ["POST_NOTIFICATIONS"],
   },
   web: {
     favicon: "./assets/favicon.png",
+    output: "static",
+    bundler: "metro",
   },
   plugins: [
     "expo-router",
-    "expo-status-bar",
-    [
-      "expo-location",
-      {
-        locationAlwaysAndWhenInUsePermission:
-          "Huggy uses your location in the background so your partner can see when you arrive or leave saved places, even when the app is closed.",
-        locationAlwaysPermission:
-          "Huggy uses your location in the background so your partner can see when you arrive or leave saved places, even when the app is closed.",
-        locationWhenInUsePermission:
-          "Huggy uses your location to show it to your partner on the live map.",
-        isAndroidBackgroundLocationEnabled: true,
-        isAndroidForegroundServiceEnabled: true,
-      },
-    ],
     [
       "expo-notifications",
       {

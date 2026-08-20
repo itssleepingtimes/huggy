@@ -43,6 +43,7 @@ export async function createCouple(uid: string): Promise<string> {
     anniversaryDate: null,
     createdAt: serverTimestamp(),
     streak: { count: 0, lastOpenedDates: {}, lastCompletedDate: null },
+    playedQuestionIds: [],
   });
   await setDoc(doc(db, "inviteCodes", code), { coupleId: newCoupleRef.id });
   await setDoc(doc(db, "users", uid), { coupleId: newCoupleRef.id }, { merge: true });

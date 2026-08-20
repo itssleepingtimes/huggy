@@ -1,49 +1,27 @@
 import { useEffect, useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import * as Location from "expo-location";
+import { Alert, ScrollView, StyleSheet, Text } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { signOut } from "@/firebase/auth";
 import { updateAnniversaryDate } from "@/services/couple";
-import { addPlace, removePlace, subscribeToPlaces } from "@/services/places";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
-import { colors, radius, spacing } from "@/theme";
-import type { Place } from "@/types";
-
-const ICON_OPTIONS = [
-  { icon: "🏠", label: "Home" },
-  { icon: "💼", label: "Work" },
-  { icon: "🏋️", label: "Gym" },
-  { icon: "📍", label: "Other" },
-];
+import { colors, spacing } from "@/theme";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export default function Profile() {
-  const uid = useAuthStore((s) => s.firebaseUser?.uid ?? "");
   const name = useAuthStore((s) => s.profile?.name ?? "");
   const couple = useCoupleStore((s) => s.couple);
   const partner = useCoupleStore((s) => s.partner);
 
   const [dateDraft, setDateDraft] = useState(couple?.anniversaryDate ?? "");
   const [savingDate, setSavingDate] = useState(false);
-  const [places, setPlaces] = useState<Place[]>([]);
-  const [addingPlace, setAddingPlace] = useState(false);
-  const [placeName, setPlaceName] = useState("");
-  const [placeIcon, setPlaceIcon] = useState(ICON_OPTIONS[0].icon);
-  const [placeCoords, setPlaceCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [savingPlace, setSavingPlace] = useState(false);
 
   useEffect(() => {
     setDateDraft(couple?.anniversaryDate ?? "");
   }, [couple?.anniversaryDate]);
-
-  useEffect(() => {
-    if (!couple) return;
-    return subscribeToPlaces(couple.id, setPlaces);
-  }, [couple?.id]);
 
   async function handleSaveDate() {
     if (!couple) return;
@@ -59,47 +37,6 @@ export default function Profile() {
     } finally {
       setSavingDate(false);
     }
-  }
-
-  async function handleStartAddPlace() {
-    const permission = await Location.requestForegroundPermissionsAsync();
-    if (permission.status !== "granted") {
-      Alert.alert("Permission needed", "Allow location access to save this place.");
-      return;
-    }
-    const position = await Location.getCurrentPositionAsync({});
-    setPlaceCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
-    setAddingPlace(true);
-  }
-
-  async function handleSavePlace() {
-    if (!couple || !placeCoords || !placeName.trim()) return;
-    setSavingPlace(true);
-    try {
-      await addPlace(couple.id, uid, {
-        name: placeName.trim(),
-        icon: placeIcon,
-        lat: placeCoords.lat,
-        lng: placeCoords.lng,
-        radius: 150,
-      });
-      setAddingPlace(false);
-      setPlaceName("");
-      setPlaceIcon(ICON_OPTIONS[0].icon);
-      setPlaceCoords(null);
-    } catch (err: any) {
-      Alert.alert("Couldn't save place", err?.message ?? "Please try again.");
-    } finally {
-      setSavingPlace(false);
-    }
-  }
-
-  function handleRemovePlace(place: Place) {
-    if (!couple) return;
-    Alert.alert("Remove place?", `Delete "${place.name}"`, [
-      { text: "Cancel", style: "cancel" },
-      { text: "Remove", style: "destructive", onPress: () => removePlace(couple.id, place.id) },
-    ]);
   }
 
   return (
@@ -132,46 +69,6 @@ export default function Profile() {
         <Button title="Save date" onPress={handleSaveDate} loading={savingDate} />
       </Card>
 
-      <Card>
-        <Text style={styles.cardLabel}>Saved places</Text>
-        {places.map((place) => (
-          <Pressable key={place.id} style={styles.placeRow} onLongPress={() => handleRemovePlace(place)}>
-            <Text style={styles.placeIcon}>{place.icon}</Text>
-            <Text style={styles.placeName}>{place.name}</Text>
-            <Text style={styles.placeHint}>hold to remove</Text>
-          </Pressable>
-        ))}
-
-        {addingPlace ? (
-          <View style={styles.addForm}>
-            <View style={styles.iconRow}>
-              {ICON_OPTIONS.map((opt) => (
-                <Pressable
-                  key={opt.icon}
-                  onPress={() => setPlaceIcon(opt.icon)}
-                  style={[styles.iconChip, placeIcon === opt.icon && styles.iconChipActive]}
-                >
-                  <Text style={styles.placeIcon}>{opt.icon}</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextField placeholder="Name this place" value={placeName} onChangeText={setPlaceName} />
-            <View style={styles.addFormActions}>
-              <Button title="Cancel" variant="ghost" onPress={() => setAddingPlace(false)} style={styles.flexButton} />
-              <Button
-                title="Save place"
-                onPress={handleSavePlace}
-                loading={savingPlace}
-                disabled={!placeName.trim()}
-                style={styles.flexButton}
-              />
-            </View>
-          </View>
-        ) : (
-          <Button title="+ Add current location as a place" variant="secondary" onPress={handleStartAddPlace} />
-        )}
-      </Card>
-
       <Button title="Sign out" variant="ghost" onPress={() => signOut()} />
     </ScrollView>
   );
@@ -186,29 +83,4 @@ const styles = StyleSheet.create({
   cardLabel: { fontSize: 12, fontWeight: "700", color: colors.secondary, textTransform: "uppercase" },
   inviteCard: { alignItems: "center" },
   inviteCode: { fontSize: 32, fontWeight: "800", letterSpacing: 4, color: colors.primary },
-  placeRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  placeIcon: { fontSize: 20 },
-  placeName: { flex: 1, fontSize: 15, color: colors.text },
-  placeHint: { fontSize: 10, color: colors.textMuted },
-  addForm: { gap: spacing.sm },
-  iconRow: { flexDirection: "row", gap: spacing.sm },
-  iconChip: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  iconChipActive: { borderColor: colors.primary, backgroundColor: "#FFE3EC" },
-  addFormActions: { flexDirection: "row", gap: spacing.sm },
-  flexButton: { flex: 1 },
 });

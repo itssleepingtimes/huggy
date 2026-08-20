@@ -1,0 +1,12 @@
+{
+  "name": "Huggy",
+  "short_name": "Huggy",
+  "description": "A private daily space for two.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8FA",
+  "theme_color": "#FF5C8A",
+  "icons": [
+    { "src": "/icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,5 +1,6 @@
+import { Platform } from "react-native";
 import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
-import { initializeAuth, type Auth } from "firebase/auth";
+import { getAuth, initializeAuth, type Auth } from "firebase/auth";
 // @ts-expect-error — getReactNativePersistence lives on firebase/auth's React Native entry
 // point, which Metro resolves at bundle time but `tsc` (using node resolution) can't see.
 import { getReactNativePersistence } from "firebase/auth";
@@ -21,13 +22,18 @@ export const isFirebaseConfigured = Boolean(
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 let auth: Auth;
-try {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-} catch {
-  // initializeAuth throws if already called (e.g. fast refresh) — fall back to getAuth.
-  auth = require("firebase/auth").getAuth(app);
+if (Platform.OS === "web") {
+  // Web already persists to localStorage by default via getAuth — no extra setup needed.
+  auth = getAuth(app);
+} else {
+  try {
+    auth = initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage),
+    });
+  } catch {
+    // initializeAuth throws if already called (e.g. fast refresh) — fall back to getAuth.
+    auth = getAuth(app);
+  }
 }
 
 export { app, auth };

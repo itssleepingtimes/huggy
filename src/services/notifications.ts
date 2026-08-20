@@ -4,19 +4,23 @@ import * as Notifications from "expo-notifications";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+if (Platform.OS !== "web") {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+}
 
 /** Requests notification permission and saves this device's Expo push token to the user's
- * profile so the Cloud Function can relay pokes and place-arrival alerts. No-ops on simulators
- * and on web, where push tokens aren't available. */
+ * profile so the Cloud Function can relay pokes. No-ops on web (no Expo push tokens there —
+ * pokes still show up in-app via the Firestore listener while the page is open) and on
+ * simulators. */
 export async function registerForPushNotifications(uid: string): Promise<void> {
+  if (Platform.OS === "web") return;
   if (!Device.isDevice) return;
 
   const existing = await Notifications.getPermissionsAsync();

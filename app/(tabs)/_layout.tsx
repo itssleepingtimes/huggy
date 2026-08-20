@@ -30,10 +30,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="map"
+        name="play"
         options={{
-          title: "Map",
-          tabBarIcon: ({ color, size }) => <Ionicons name="location" color={color} size={size} />,
+          title: "Play",
+          tabBarIcon: ({ color, size }) => <Ionicons name="game-controller" color={color} size={size} />,
         }}
       />
       <Tabs.Screen

@@ -47,22 +47,3 @@ export const onPokeCreated = onDocumentCreated(
     await sendExpoPush(partner.partnerToken, "💗 Thinking of you", `${partner.actingName} is thinking of you`);
   }
 );
-
-export const onPlaceEventCreated = onDocumentCreated(
-  "couples/{coupleId}/placeEvents/{eventId}",
-  async (event) => {
-    const data = event.data?.data();
-    if (!data) return;
-    const { coupleId } = event.params;
-
-    const partner = await getPartner(coupleId, data.uid);
-    if (!partner) return;
-
-    const verb = data.type === "arrive" ? "arrived at" : "left";
-    await sendExpoPush(
-      partner.partnerToken,
-      "📍 Location update",
-      `${partner.actingName} just ${verb} ${data.placeName}`
-    );
-  }
-);

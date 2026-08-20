@@ -18,35 +18,7 @@ export type Couple = {
     lastOpenedDates: Record<string, string>; // uid -> "YYYY-MM-DD"
     lastCompletedDate: string | null; // last date both partners had opened the app
   };
-};
-
-export type PartnerLocation = {
-  uid: string;
-  lat: number;
-  lng: number;
-  heading: number | null;
-  speed: number | null;
-  battery: number | null;
-  updatedAt: number;
-};
-
-export type Place = {
-  id: string;
-  name: string;
-  icon: string;
-  lat: number;
-  lng: number;
-  radius: number; // meters
-  createdBy: string;
-};
-
-export type PlaceEvent = {
-  id: string;
-  uid: string;
-  placeId: string;
-  placeName: string;
-  type: "arrive" | "leave";
-  timestamp: number;
+  playedQuestionIds: string[]; // bundled Question ids already played, so rounds don't repeat until exhausted
 };
 
 export type Moment = {
@@ -56,10 +28,25 @@ export type Moment = {
   createdAt: number;
 };
 
-export type DailyPrompt = {
-  date: string; // "YYYY-MM-DD"
-  promptText: string;
-  answers: Record<string, string>;
+export type QuestionType = "prompt" | "this-or-that" | "rating" | "quiz";
+
+export type Question = {
+  id: string;
+  type: QuestionType;
+  category: string;
+  text: string;
+  options?: string[]; // "this-or-that": exactly 2 options; "quiz": multiple options
+};
+
+export type Round = {
+  id: string;
+  questionId: string;
+  type: QuestionType;
+  category: string;
+  text: string;
+  options?: string[];
+  answers: Record<string, string>; // uid -> answer (option text, rating "1"-"10", or free text)
+  createdAt: number;
 };
 
 export type Poke = {

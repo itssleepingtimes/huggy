@@ -54,6 +54,7 @@ export const useCoupleStore = create<CoupleState>((set) => ({
         anniversaryDate: data.anniversaryDate ?? null,
         createdAt: toMillis(data.createdAt),
         streak: data.streak ?? { count: 0, lastOpenedDates: {}, lastCompletedDate: null },
+        playedQuestionIds: data.playedQuestionIds ?? [],
       };
       set({ couple, loading: false });
 
