@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
@@ -10,6 +10,7 @@ import { StreakBadge } from "@/components/StreakBadge";
 import { Button } from "@/components/Button";
 import { colors, radius, spacing } from "@/theme";
 import { todayKey } from "@/firebase/firestore";
+import { alert } from "@/utils/alert";
 
 export default function Home() {
   const uid = useAuthStore((s) => s.firebaseUser?.uid ?? "");
@@ -19,19 +20,19 @@ export default function Home() {
   const router = useRouter();
 
   const [poking, setPoking] = useState(false);
-  const hasRecordedOpen = useRef<string | null>(null);
 
   useEffect(() => {
     if (!couple || !uid) return;
-    if (hasRecordedOpen.current === couple.id) return;
-    hasRecordedOpen.current = couple.id;
     recordAppOpen(couple.id, uid, partner?.uid ?? null).catch(() => {});
-  }, [couple, uid, partner?.uid]);
+    // Re-runs once partner data finishes loading (partner?.uid flips from undefined to a
+    // real uid) so the "both opened today" check still completes even if this ran once
+    // already with no partner known yet — recordAppOpen is idempotent, safe to call again.
+  }, [couple?.id, uid, partner?.uid]);
 
   useEffect(() => {
     if (!couple || !uid) return;
     return subscribeToIncomingPokes(couple.id, uid, () => {
-      Alert.alert("💗", `${partner?.name || "Your partner"} is thinking of you`);
+      alert("💗", `${partner?.name || "Your partner"} is thinking of you`);
     });
   }, [couple?.id, uid, partner?.name]);
 
@@ -41,7 +42,7 @@ export default function Home() {
     try {
       await sendPoke(couple.id, uid);
     } catch (err: any) {
-      Alert.alert("Couldn't send", err?.message ?? "Please try again.");
+      alert("Couldn't send", err?.message ?? "Please try again.");
     } finally {
       setPoking(false);
     }

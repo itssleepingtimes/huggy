@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { createCouple, joinCouple } from "@/services/pairing";
 import { signOut } from "@/firebase/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { colors, spacing } from "@/theme";
+import { alert } from "@/utils/alert";
 
 export default function Pair() {
   const uid = useAuthStore((s) => s.firebaseUser?.uid);
@@ -18,12 +19,12 @@ export default function Pair() {
     setLoading(true);
     try {
       const inviteCode = await createCouple(uid);
-      Alert.alert(
+      alert(
         "Share this code with your partner",
         `${inviteCode}\n\nThey'll enter this in "Join with a code" to pair with you. You can also find it later in Profile.`
       );
     } catch (err: any) {
-      Alert.alert("Something went wrong", err?.message ?? "Please try again.");
+      alert("Something went wrong", err?.message ?? "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -35,7 +36,7 @@ export default function Pair() {
     try {
       await joinCouple(uid, code);
     } catch (err: any) {
-      Alert.alert("Couldn't join", err?.message ?? "Please try again.");
+      alert("Couldn't join", err?.message ?? "Please try again.");
     } finally {
       setLoading(false);
     }

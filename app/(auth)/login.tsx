@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { signIn } from "@/firebase/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { colors, spacing } from "@/theme";
+import { alert } from "@/utils/alert";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,14 +14,14 @@ export default function Login() {
 
   async function handleLogin() {
     if (!email || !password) {
-      Alert.alert("Missing info", "Enter your email and password.");
+      alert("Missing info", "Enter your email and password.");
       return;
     }
     setLoading(true);
     try {
       await signIn(email.trim(), password);
     } catch (err: any) {
-      Alert.alert("Couldn't sign in", err?.message ?? "Please try again.");
+      alert("Couldn't sign in", err?.message ?? "Please try again.");
     } finally {
       setLoading(false);
     }

@@ -29,7 +29,12 @@ service cloud.firestore {
     }
 
     match /couples/{coupleId} {
-      allow get: if signedIn() && request.auth.uid in resource.data.memberIds;
+      // A non-member may also read a couple doc while it still has an open second slot —
+      // needed for the join-with-code transaction to read current membership before it's
+      // able to add itself. Couple IDs aren't guessable/listable, so this only matters to
+      // someone who already has the right invite code.
+      allow get: if signedIn() &&
+        (request.auth.uid in resource.data.memberIds || resource.data.memberIds.size() < 2);
       allow create: if signedIn() && request.resource.data.memberIds == [request.auth.uid];
       allow update: if signedIn() && (
         request.auth.uid in resource.data.memberIds ||

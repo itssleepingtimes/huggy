@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { startNewRound, submitRoundAnswer, subscribeToCurrentRound } from "@/services/rounds";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { colors, radius, spacing } from "@/theme";
+import { alert } from "@/utils/alert";
 import type { Round } from "@/types";
 
 const RATING_SCALE = Array.from({ length: 10 }, (_, i) => String(i + 1));
@@ -35,7 +36,7 @@ export default function Play() {
     try {
       await startNewRound(couple.id, couple.playedQuestionIds);
     } catch (err: any) {
-      Alert.alert("Couldn't start", err?.message ?? "Please try again.");
+      alert("Couldn't start", err?.message ?? "Please try again.");
     } finally {
       setBusy(false);
     }
@@ -47,7 +48,7 @@ export default function Play() {
     try {
       await submitRoundAnswer(couple.id, uid, answer.trim());
     } catch (err: any) {
-      Alert.alert("Couldn't send answer", err?.message ?? "Please try again.");
+      alert("Couldn't send answer", err?.message ?? "Please try again.");
     } finally {
       setBusy(false);
     }

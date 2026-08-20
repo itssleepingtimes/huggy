@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { isFirebaseConfigured } from "@/firebase/config";
 import { registerForPushNotifications } from "@/services/notifications";
+import { AlertHost } from "@/components/AlertHost";
 import { colors } from "@/theme";
 
 export default function RootLayout() {
@@ -61,6 +62,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
       </Stack>
+      <AlertHost />
     </SafeAreaProvider>
   );
 }

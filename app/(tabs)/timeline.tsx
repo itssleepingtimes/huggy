@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { addMoment, subscribeToMoments } from "@/services/moments";
@@ -7,6 +7,7 @@ import { MomentCard } from "@/components/MomentCard";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { colors, radius, spacing } from "@/theme";
+import { alert } from "@/utils/alert";
 import type { Moment } from "@/types";
 
 export default function Timeline() {
@@ -37,7 +38,7 @@ export default function Timeline() {
       await addMoment(couple.id, uid, draft);
       setDraft("");
     } catch (err: any) {
-      Alert.alert("Couldn't share", err?.message ?? "Please try again.");
+      alert("Couldn't share", err?.message ?? "Please try again.");
     } finally {
       setPosting(false);
     }

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { signUp } from "@/firebase/auth";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { colors, spacing } from "@/theme";
+import { alert } from "@/utils/alert";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -14,18 +15,18 @@ export default function Signup() {
 
   async function handleSignup() {
     if (!name || !email || !password) {
-      Alert.alert("Missing info", "Fill in your name, email, and password.");
+      alert("Missing info", "Fill in your name, email, and password.");
       return;
     }
     if (password.length < 6) {
-      Alert.alert("Weak password", "Password must be at least 6 characters.");
+      alert("Weak password", "Password must be at least 6 characters.");
       return;
     }
     setLoading(true);
     try {
       await signUp(name.trim(), email.trim(), password);
     } catch (err: any) {
-      Alert.alert("Couldn't create account", err?.message ?? "Please try again.");
+      alert("Couldn't create account", err?.message ?? "Please try again.");
     } finally {
       setLoading(false);
     }

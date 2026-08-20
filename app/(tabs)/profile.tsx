@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { signOut } from "@/firebase/auth";
@@ -8,6 +8,7 @@ import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
 import { colors, spacing } from "@/theme";
+import { alert } from "@/utils/alert";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -26,14 +27,14 @@ export default function Profile() {
   async function handleSaveDate() {
     if (!couple) return;
     if (!DATE_PATTERN.test(dateDraft)) {
-      Alert.alert("Invalid date", "Use the format YYYY-MM-DD, e.g. 2024-02-14.");
+      alert("Invalid date", "Use the format YYYY-MM-DD, e.g. 2024-02-14.");
       return;
     }
     setSavingDate(true);
     try {
       await updateAnniversaryDate(couple.id, dateDraft);
     } catch (err: any) {
-      Alert.alert("Couldn't save", err?.message ?? "Please try again.");
+      alert("Couldn't save", err?.message ?? "Please try again.");
     } finally {
       setSavingDate(false);
     }

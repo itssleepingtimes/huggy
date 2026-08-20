@@ -9,9 +9,10 @@ function yesterdayKey(today: string): string {
 }
 
 /**
- * Records that `myUid` opened the app today. The streak only increments once per day,
- * the moment the *second* partner opens the app on a day that continues yesterday's streak —
- * this stays correct however the two opens are ordered.
+ * Records that `myUid` opened the app today. The streak only increments once per day, the
+ * moment both partners have opened it — checked on every call (not just the first per day)
+ * so it still completes correctly if `partnerUid` wasn't known yet on an earlier call (e.g.
+ * their profile hadn't loaded when this ran right after pairing).
  */
 export async function recordAppOpen(coupleId: string, myUid: string, partnerUid: string | null) {
   const today = todayKey();
@@ -25,19 +26,17 @@ export async function recordAppOpen(coupleId: string, myUid: string, partnerUid:
     let count: number = data.streak?.count ?? 0;
     let lastCompletedDate: string | null = data.streak?.lastCompletedDate ?? null;
 
-    if (lastOpenedDates[myUid] === today) return; // already recorded today
+    const alreadyMarkedToday = lastOpenedDates[myUid] === today;
     lastOpenedDates[myUid] = today;
 
-    if (partnerUid && lastOpenedDates[partnerUid] === today) {
-      if (lastCompletedDate === today) {
-        // no-op, already counted
-      } else if (lastCompletedDate === yesterdayKey(today)) {
-        count += 1;
-        lastCompletedDate = today;
-      } else {
-        count = 1;
-        lastCompletedDate = today;
-      }
+    const bothOpenToday = Boolean(partnerUid && lastOpenedDates[partnerUid] === today);
+    const alreadyCompletedToday = lastCompletedDate === today;
+
+    if (bothOpenToday && !alreadyCompletedToday) {
+      count = lastCompletedDate === yesterdayKey(today) ? count + 1 : 1;
+      lastCompletedDate = today;
+    } else if (alreadyMarkedToday) {
+      return; // nothing changed since the last call, skip the write
     }
 
     tx.update(coupleRef, { streak: { count, lastOpenedDates, lastCompletedDate } });
