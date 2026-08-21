@@ -12,12 +12,10 @@ import {
 } from "@/services/rounds";
 import { PLAY_MODES } from "@/data/questions";
 import { Button } from "@/components/Button";
-import { TextField } from "@/components/TextField";
+import { RoundCard } from "@/components/RoundCard";
 import { colors, radius, shadow, spacing } from "@/theme";
 import { alert } from "@/utils/alert";
 import type { GamePointer, PlayModeId, Round } from "@/types";
-
-const RATING_SCALE = Array.from({ length: 10 }, (_, i) => String(i + 1));
 
 export default function Play() {
   const uid = useAuthStore((s) => s.firebaseUser?.uid ?? "");
@@ -27,7 +25,6 @@ export default function Play() {
 
   const [pointer, setPointer] = useState<GamePointer | null | undefined>(undefined);
   const [round, setRound] = useState<Round | null>(null);
-  const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -42,10 +39,6 @@ export default function Play() {
     }
     return subscribeToRound(couple.id, pointer.currentRoundId, setRound);
   }, [couple?.id, pointer?.currentRoundId]);
-
-  useEffect(() => {
-    setDraft("");
-  }, [round?.id]);
 
   async function handlePickMode(modeId: PlayModeId) {
     if (!couple) return;
@@ -162,86 +155,14 @@ export default function Play() {
         </View>
       )}
 
-      <View style={styles.card}>
-        <Text style={styles.category}>{round.category}</Text>
-        <Text style={styles.question}>{round.text}</Text>
-
-        {!myAnswer && (
-          <View style={styles.answerZone}>
-            {round.type === "prompt" && (
-              <View style={{ gap: spacing.sm }}>
-                <TextField
-                  placeholder="Type your answer…"
-                  value={draft}
-                  onChangeText={setDraft}
-                  multiline
-                />
-                <Button
-                  title="Submit"
-                  onPress={() => handleAnswer(draft)}
-                  loading={busy}
-                  disabled={!draft.trim()}
-                />
-              </View>
-            )}
-
-            {(round.type === "this-or-that" || round.type === "quiz") && (
-              <View style={{ gap: spacing.sm }}>
-                {round.options?.map((option) => (
-                  <Button
-                    key={option}
-                    title={option}
-                    variant="secondary"
-                    onPress={() => handleAnswer(option)}
-                    disabled={busy}
-                  />
-                ))}
-              </View>
-            )}
-
-            {round.type === "rating" && (
-              <View style={styles.ratingRow}>
-                {RATING_SCALE.map((n) => (
-                  <Button
-                    key={n}
-                    title={n}
-                    variant="secondary"
-                    onPress={() => handleAnswer(n)}
-                    disabled={busy}
-                    style={styles.ratingButton}
-                  />
-                ))}
-              </View>
-            )}
-          </View>
-        )}
-
-        {myAnswer && !bothAnswered && (
-          <View style={styles.waiting}>
-            <Text style={styles.waitingText}>
-              You answered "{myAnswer}" — waiting for {partner?.name || "your partner"}…
-            </Text>
-          </View>
-        )}
-
-        {bothAnswered && (
-          <View style={styles.reveal}>
-            <View style={styles.revealRow}>
-              <Text style={styles.revealLabel}>{myName}</Text>
-              <Text style={styles.revealAnswer}>{myAnswer}</Text>
-            </View>
-            <View style={styles.revealRow}>
-              <Text style={styles.revealLabel}>{partner?.name}</Text>
-              <Text style={styles.revealAnswer}>{partnerAnswer}</Text>
-            </View>
-            {(round.type === "this-or-that" || round.type === "quiz" || round.type === "rating") && (
-              <Text style={styles.matchText}>
-                {myAnswer === partnerAnswer ? "🎉 You matched!" : "Different answers — talk about it!"}
-              </Text>
-            )}
-          </View>
-        )}
-      </View>
+      <RoundCard
+        round={round}
+        uid={uid}
+        myName={myName}
+        partner={partner ? { uid: partner.uid, name: partner.name } : null}
+        onAnswer={handleAnswer}
+        busy={busy}
+      />
 
       {bothAnswered && (
         <Button
@@ -294,34 +215,5 @@ const styles = StyleSheet.create({
   },
   progressText: { fontSize: 13, fontWeight: "700", color: colors.secondary },
   exitLink: { fontSize: 13, color: colors.textMuted, textDecorationLine: "underline" },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.md,
-    ...shadow.card,
-  },
-  category: { fontSize: 12, fontWeight: "700", color: colors.secondary, textTransform: "uppercase" },
-  question: { fontSize: 20, fontWeight: "700", color: colors.text, lineHeight: 27 },
-  answerZone: { marginTop: spacing.xs },
-  ratingRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs },
-  ratingButton: { flexBasis: "17%", paddingHorizontal: 0 },
-  waiting: {
-    backgroundColor: colors.background,
-    borderRadius: radius.md,
-    padding: spacing.md,
-  },
-  waitingText: { fontSize: 14, color: colors.textMuted },
-  reveal: { gap: spacing.sm },
-  revealRow: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: spacing.sm,
-  },
-  revealLabel: { fontSize: 12, fontWeight: "700", color: colors.textMuted },
-  revealAnswer: { fontSize: 16, color: colors.text, marginTop: 2 },
-  matchText: { fontSize: 14, fontWeight: "600", color: colors.primary, textAlign: "center" },
   nextButton: { marginTop: spacing.sm },
 });

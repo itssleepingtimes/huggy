@@ -6,13 +6,20 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { recordAppOpen } from "@/services/streak";
 import { sendPoke, subscribeToIncomingPokes } from "@/services/pokes";
+import {
+  ensureTodayQuestion,
+  submitDailyAnswer,
+  subscribeToTodayQuestion,
+} from "@/services/dailyQuestion";
 import { DdayCounter } from "@/components/DdayCounter";
 import { StreakBadge } from "@/components/StreakBadge";
+import { RoundCard } from "@/components/RoundCard";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { colors, radius, spacing } from "@/theme";
 import { todayKey } from "@/firebase/firestore";
 import { alert } from "@/utils/alert";
+import type { Round } from "@/types";
 
 export default function Home() {
   const uid = useAuthStore((s) => s.firebaseUser?.uid ?? "");
@@ -22,6 +29,8 @@ export default function Home() {
   const router = useRouter();
 
   const [poking, setPoking] = useState(false);
+  const [dailyQuestion, setDailyQuestion] = useState<Round | null>(null);
+  const [answering, setAnswering] = useState(false);
 
   useEffect(() => {
     if (!couple || !uid) return;
@@ -30,6 +39,12 @@ export default function Home() {
     // real uid) so the "both opened today" check still completes even if this ran once
     // already with no partner known yet — recordAppOpen is idempotent, safe to call again.
   }, [couple?.id, uid, partner?.uid]);
+
+  useEffect(() => {
+    if (!couple) return;
+    ensureTodayQuestion(couple.id).catch(() => {});
+    return subscribeToTodayQuestion(couple.id, setDailyQuestion);
+  }, [couple?.id]);
 
   useEffect(() => {
     if (!couple || !uid) return;
@@ -47,6 +62,18 @@ export default function Home() {
       alert("Couldn't send", err?.message ?? "Please try again.");
     } finally {
       setPoking(false);
+    }
+  }
+
+  async function handleDailyAnswer(answer: string) {
+    if (!couple || !answer.trim()) return;
+    setAnswering(true);
+    try {
+      await submitDailyAnswer(couple.id, uid, answer.trim());
+    } catch (err: any) {
+      alert("Couldn't send answer", err?.message ?? "Please try again.");
+    } finally {
+      setAnswering(false);
     }
   }
 
@@ -72,15 +99,33 @@ export default function Home() {
 
       <StreakBadge count={couple?.streak.count ?? 0} bothOpenedToday={bothOpenedToday} />
 
+      <View>
+        <Text style={styles.sectionLabel}>☀️ Today's Question</Text>
+        {dailyQuestion ? (
+          <RoundCard
+            round={dailyQuestion}
+            uid={uid}
+            myName={name || "You"}
+            partner={partner ? { uid: partner.uid, name: partner.name } : null}
+            onAnswer={handleDailyAnswer}
+            busy={answering}
+          />
+        ) : (
+          <Card>
+            <Text style={styles.actionSubtitle}>Loading today's question…</Text>
+          </Card>
+        )}
+      </View>
+
       <Card style={styles.actionCard}>
         <View style={styles.actionRow}>
           <View style={[styles.iconBubble, { backgroundColor: "#EFEAFE" }]}>
             <Ionicons name="dice" size={22} color={colors.secondary} />
           </View>
           <View style={styles.actionText}>
-            <Text style={styles.actionTitle}>Question of the moment</Text>
+            <Text style={styles.actionTitle}>Want more?</Text>
             <Text style={styles.actionSubtitle}>
-              Quizzes, ratings, this-or-that, deep questions — see how you two compare.
+              Quizzes, ratings, this-or-that, deep questions — pick a mode in the Play tab.
             </Text>
           </View>
         </View>
@@ -113,6 +158,14 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginBottom: spacing.xs },
   greeting: { fontSize: 26, fontWeight: "800", color: colors.text },
   waveEmoji: { fontSize: 24 },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: colors.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+    marginBottom: spacing.sm,
+  },
   actionCard: { gap: spacing.md },
   actionRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   iconBubble: {

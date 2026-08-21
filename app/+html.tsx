@@ -18,6 +18,11 @@ export default function Root({ children }: PropsWithChildren) {
         <link rel="apple-touch-icon" href="/icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <ScrollViewStyleReset />
+        {/* iOS Safari's 100vh includes space the collapsible toolbar can cover, which can hide
+            fixed-bottom content like the tab bar. 100dvh tracks the actual visible area. */}
+        <style>{`
+          html, body, #root { height: 100vh; height: 100dvh; }
+        `}</style>
       </head>
       <body>{children}</body>
     </html>
