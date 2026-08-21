@@ -49,6 +49,24 @@ export type Round = {
   createdAt: number;
 };
 
+export type PlayModeId = "quick" | "rate-us" | "would-you-rather" | "deep-talk" | "quiz-us";
+
+export type PlayMode = {
+  id: PlayModeId;
+  title: string;
+  emoji: string;
+  description: string;
+  questionType: QuestionType | null; // null = mixed, any type (quick mode)
+  length: number | null; // null = unlimited (quick mode)
+};
+
+export type GamePointer = {
+  currentRoundId: string | null;
+  mode: PlayModeId | null;
+  sessionIndex: number; // 1-based position within the current mode session
+  sessionTotal: number | null; // null = unlimited
+};
+
 export type Poke = {
   id: string;
   fromUid: string;

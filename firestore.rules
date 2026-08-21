@@ -49,9 +49,15 @@ service cloud.firestore {
         allow update, delete: if isCoupleMember(coupleId) && resource.data.uid == request.auth.uid;
       }
 
-      // Single fixed doc ("current") holding whatever question round is active right now.
+      // Single fixed doc ("pointer") tracking the active round + mode session.
       match /game/{docId} {
         allow read, write: if isCoupleMember(coupleId);
+      }
+
+      // Every round ever played, kept permanently as history.
+      match /rounds/{roundId} {
+        allow read, create, update: if isCoupleMember(coupleId);
+        allow delete: if false;
       }
 
       match /pokes/{pokeId} {

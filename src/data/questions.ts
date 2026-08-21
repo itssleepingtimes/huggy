@@ -1,4 +1,4 @@
-import type { Question } from "@/types";
+import type { PlayMode, PlayModeId, Question, QuestionType } from "@/types";
 
 export const QUESTIONS: Question[] = [
   // ---- Deep Talk (open text) ----
@@ -137,6 +137,57 @@ export const QUESTIONS: Question[] = [
   { id: "fun-018", type: "prompt", category: "Fun & Random", text: "What's the weirdest dream you've had recently?" },
   { id: "fun-019", type: "this-or-that", category: "Fun & Random", text: "Only whisper or only shout for a day?", options: ["Only whisper", "Only shout"] },
   { id: "fun-020", type: "prompt", category: "Fun & Random", text: "If we had a theme park, what would the main ride be?" },
+
+  // ---- More This or That (for Would You Rather mode) ----
+  { id: "tot-026", type: "this-or-that", category: "This or That", text: "Live without hot showers or without AC?", options: ["No hot showers", "No AC"] },
+  { id: "tot-027", type: "this-or-that", category: "This or That", text: "Text throughout the day or one long catch-up call?", options: ["Text all day", "One long call"] },
+  { id: "tot-028", type: "this-or-that", category: "This or That", text: "Be famous or be rich?", options: ["Famous", "Rich"] },
+  { id: "tot-029", type: "this-or-that", category: "This or That", text: "Always know when someone's lying or always get away with lying?", options: ["Know when lied to", "Get away with lying"] },
+  { id: "tot-030", type: "this-or-that", category: "This or That", text: "Relive your favorite day forever or never repeat a day?", options: ["Relive favorite day", "Never repeat a day"] },
+  { id: "tot-031", type: "this-or-that", category: "This or That", text: "Lose your phone or lose your wallet?", options: ["Lose phone", "Lose wallet"] },
+  { id: "tot-032", type: "this-or-that", category: "This or That", text: "Have unlimited time or unlimited money?", options: ["Unlimited time", "Unlimited money"] },
+  { id: "tot-033", type: "this-or-that", category: "This or That", text: "One best friend forever or a big rotating friend group?", options: ["One best friend", "Big friend group"] },
+  { id: "tot-034", type: "this-or-that", category: "This or That", text: "Live in a tiny house debt-free or a mansion with a mortgage?", options: ["Tiny house, debt-free", "Mansion, mortgage"] },
+  { id: "tot-035", type: "this-or-that", category: "This or That", text: "Give up sweets or give up salty snacks?", options: ["No sweets", "No salty snacks"] },
+  { id: "tot-036", type: "this-or-that", category: "This or That", text: "Know exactly how your story ends or be surprised?", options: ["Know the ending", "Be surprised"] },
+  { id: "tot-037", type: "this-or-that", category: "This or That", text: "Always be 10 minutes late or always 20 minutes early?", options: ["Always late", "Always early"] },
+  { id: "tot-038", type: "this-or-that", category: "This or That", text: "Redo your favorite trip or take a brand new one?", options: ["Redo favorite trip", "Take a new one"] },
+  { id: "tot-039", type: "this-or-that", category: "This or That", text: "Fight in front of others or never fight but bottle it up?", options: ["Fight openly", "Bottle it up"] },
+  { id: "tot-040", type: "this-or-that", category: "This or That", text: "Live near family or live far with more independence?", options: ["Near family", "Far, independent"] },
+  { id: "tot-041", type: "this-or-that", category: "This or That", text: "Wake up as the opposite gender for a day or as an animal?", options: ["Opposite gender", "An animal"] },
+  { id: "tot-042", type: "this-or-that", category: "This or That", text: "Never use social media again or never watch another movie?", options: ["No social media", "No movies"] },
+  { id: "tot-043", type: "this-or-that", category: "This or That", text: "Be able to skip bad days or replay good ones?", options: ["Skip bad days", "Replay good ones"] },
+  { id: "tot-044", type: "this-or-that", category: "This or That", text: "Have a pet dragon or a pet unicorn?", options: ["Pet dragon", "Pet unicorn"] },
+  { id: "tot-045", type: "this-or-that", category: "This or That", text: "Only eat one cuisine forever or never repeat a cuisine?", options: ["One cuisine forever", "Never repeat"] },
+
+  // ---- More Rate It (for Rate Us mode) ----
+  { id: "rating-021", type: "rating", category: "Rate It", text: "How connected do you feel to me right now?" },
+  { id: "rating-022", type: "rating", category: "Rate It", text: "How much do you trust things are going well between us?" },
+  { id: "rating-023", type: "rating", category: "Rate It", text: "How good are we at communicating lately?" },
+  { id: "rating-024", type: "rating", category: "Rate It", text: "How much fun have we had together this week?" },
+  { id: "rating-025", type: "rating", category: "Rate It", text: "How well do you feel understood by me?" },
+  { id: "rating-026", type: "rating", category: "Rate It", text: "How much are you looking forward to our next date?" },
+  { id: "rating-027", type: "rating", category: "Rate It", text: "How romantic has this week been?" },
+  { id: "rating-028", type: "rating", category: "Rate It", text: "How well are we splitting effort at home lately?" },
+  { id: "rating-029", type: "rating", category: "Rate It", text: "How adventurous are you feeling this month?" },
+  { id: "rating-030", type: "rating", category: "Rate It", text: "How much do you want a weekend getaway right now?" },
+  { id: "rating-031", type: "rating", category: "Rate It", text: "How affectionate have we been this week?" },
+  { id: "rating-032", type: "rating", category: "Rate It", text: "How proud are you of us as a couple right now?" },
+  { id: "rating-033", type: "rating", category: "Rate It", text: "How much do you want to try something new together soon?" },
+  { id: "rating-034", type: "rating", category: "Rate It", text: "How supported do you feel in what you're working on right now?" },
+  { id: "rating-035", type: "rating", category: "Rate It", text: "How good was our last conversation?" },
+
+  // ---- More About Us quiz (for Quiz Us mode) ----
+  { id: "quiz-021", type: "quiz", category: "About Us", text: "What's my love language, really?", options: ["Words of affirmation", "Physical touch", "Quality time", "Acts of service", "Gifts"] },
+  { id: "quiz-022", type: "quiz", category: "About Us", text: "What would I choose for our anniversary dinner?", options: ["Somewhere fancy", "Our favorite regular spot", "Cook at home", "Order in and relax"] },
+  { id: "quiz-023", type: "quiz", category: "About Us", text: "What's the first thing I'd save in a fire (after you)?", options: ["My phone", "Photos", "A specific keepsake", "I'd just grab you and go"] },
+  { id: "quiz-024", type: "quiz", category: "About Us", text: "How do I prefer to apologize?", options: ["Say it directly", "Do something thoughtful", "Give it time then talk", "Write it down"] },
+  { id: "quiz-025", type: "quiz", category: "About Us", text: "What's my dream pet (if we could have any)?", options: ["Dog", "Cat", "Something exotic", "No pets, thanks"] },
+  { id: "quiz-026", type: "quiz", category: "About Us", text: "What do I actually think about mornings?", options: ["Love them", "Tolerate them", "Hate them", "Depends on sleep"] },
+  { id: "quiz-027", type: "quiz", category: "About Us", text: "What's my ideal way to relax after a hard day?", options: ["Talk it out", "Quiet alone time", "Physical comfort/cuddles", "Distraction — a show or game"] },
+  { id: "quiz-028", type: "quiz", category: "About Us", text: "What would surprise me most as a gift?", options: ["Tickets to an event", "Something handmade", "A weekend trip", "Time, not stuff"] },
+  { id: "quiz-029", type: "quiz", category: "About Us", text: "What's a habit of mine you'd never actually want me to change?", options: ["How I plan things", "How I joke around", "How affectionate I am", "How I take care of you"] },
+  { id: "quiz-030", type: "quiz", category: "About Us", text: "What's my honest take on grand gestures?", options: ["Love them", "A little much for me", "Prefer small consistent things", "Depends on the occasion"] },
 ];
 
 const QUESTIONS_BY_ID = new Map(QUESTIONS.map((q) => [q.id, q]));
@@ -145,10 +196,64 @@ export function getQuestionById(id: string): Question | undefined {
   return QUESTIONS_BY_ID.get(id);
 }
 
-/** Picks a random question the couple hasn't played yet, reshuffling once the whole bank is exhausted. */
-export function pickNextQuestion(playedQuestionIds: string[]): Question {
+/** Picks a random question (optionally restricted to one type) the couple hasn't played yet,
+ * reshuffling within that pool once it's exhausted. */
+export function pickNextQuestion(
+  playedQuestionIds: string[],
+  type?: QuestionType | null
+): Question {
+  const bank = type ? QUESTIONS.filter((q) => q.type === type) : QUESTIONS;
   const playedSet = new Set(playedQuestionIds);
-  const remaining = QUESTIONS.filter((q) => !playedSet.has(q.id));
-  const pool = remaining.length > 0 ? remaining : QUESTIONS;
+  const remaining = bank.filter((q) => !playedSet.has(q.id));
+  const pool = remaining.length > 0 ? remaining : bank;
   return pool[Math.floor(Math.random() * pool.length)];
+}
+
+export const PLAY_MODES: PlayMode[] = [
+  {
+    id: "quick",
+    title: "Quick Mix",
+    emoji: "🎲",
+    description: "A little bit of everything — endless, no set length.",
+    questionType: null,
+    length: null,
+  },
+  {
+    id: "rate-us",
+    title: "Rate Us",
+    emoji: "⭐",
+    description: "5 quick rating questions about how you're both feeling.",
+    questionType: "rating",
+    length: 5,
+  },
+  {
+    id: "would-you-rather",
+    title: "Would You Rather",
+    emoji: "🤔",
+    description: "5 rounds of this-or-that, from cozy to chaotic.",
+    questionType: "this-or-that",
+    length: 5,
+  },
+  {
+    id: "quiz-us",
+    title: "Quiz Us",
+    emoji: "🧠",
+    description: "5 questions to see how well you know each other.",
+    questionType: "quiz",
+    length: 5,
+  },
+  {
+    id: "deep-talk",
+    title: "Deep Talk",
+    emoji: "💭",
+    description: "5 open questions for a slower, more thoughtful conversation.",
+    questionType: "prompt",
+    length: 5,
+  },
+];
+
+export function getPlayMode(id: PlayModeId): PlayMode {
+  const mode = PLAY_MODES.find((m) => m.id === id);
+  if (!mode) throw new Error(`Unknown play mode: ${id}`);
+  return mode;
 }

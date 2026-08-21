@@ -24,8 +24,10 @@ export function DdayCounter({ anniversaryDate }: Props) {
     );
   }
 
-  const days = daysSince(anniversaryDate);
-  const label = days >= 0 ? `D+${days}` : `D${days}`;
+  const diff = daysSince(anniversaryDate);
+  // Counted inclusively — the anniversary day itself is "D+1", matching how these counters are
+  // conventionally read (D+1 is your first day together, not D+0).
+  const label = diff >= 0 ? `D+${diff + 1}` : `D${diff}`;
 
   return (
     <View style={styles.card}>
