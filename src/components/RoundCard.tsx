@@ -65,6 +65,10 @@ export function RoundCard({ round, uid, myName, partner, onAnswer, busy }: Props
             </View>
           )}
 
+          {round.type === "dare" && (
+            <Button title="I did it! ✅" onPress={() => onAnswer("done")} loading={busy} />
+          )}
+
           {round.type === "rating" && (
             <View style={styles.ratingRow}>
               {RATING_SCALE.map((n) => (
@@ -85,12 +89,20 @@ export function RoundCard({ round, uid, myName, partner, onAnswer, busy }: Props
       {myAnswer && !bothAnswered && (
         <View style={styles.waiting}>
           <Text style={styles.waitingText}>
-            You answered "{myAnswer}" — waiting for {partner?.name || "your partner"}…
+            {round.type === "dare"
+              ? `Done on your end — waiting for ${partner?.name || "your partner"}…`
+              : `You answered "${myAnswer}" — waiting for ${partner?.name || "your partner"}…`}
           </Text>
         </View>
       )}
 
-      {bothAnswered && (
+      {bothAnswered && round.type === "dare" && (
+        <View style={styles.reveal}>
+          <Text style={styles.matchText}>🎉 Dare complete — nice work, you two!</Text>
+        </View>
+      )}
+
+      {bothAnswered && round.type !== "dare" && (
         <View style={styles.reveal}>
           <View style={styles.revealRow}>
             <Text style={styles.revealLabel}>{myName}</Text>

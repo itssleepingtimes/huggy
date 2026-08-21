@@ -1,4 +1,4 @@
-import type { PlayMode, PlayModeId, Question, QuestionType } from "@/types";
+import type { PlayMode, PlayModeId, Question } from "@/types";
 
 export const QUESTIONS: Question[] = [
   // ---- Deep Talk (open text) ----
@@ -188,6 +188,74 @@ export const QUESTIONS: Question[] = [
   { id: "quiz-028", type: "quiz", category: "About Us", text: "What would surprise me most as a gift?", options: ["Tickets to an event", "Something handmade", "A weekend trip", "Time, not stuff"] },
   { id: "quiz-029", type: "quiz", category: "About Us", text: "What's a habit of mine you'd never actually want me to change?", options: ["How I plan things", "How I joke around", "How affectionate I am", "How I take care of you"] },
   { id: "quiz-030", type: "quiz", category: "About Us", text: "What's my honest take on grand gestures?", options: ["Love them", "A little much for me", "Prefer small consistent things", "Depends on the occasion"] },
+
+  // ---- Truth (for Truth or Dare mode — bolder/more personal than Deep Talk) ----
+  { id: "truth-001", type: "prompt", category: "Truth", text: "What's something you've never told me but probably should?" },
+  { id: "truth-002", type: "prompt", category: "Truth", text: "What's the most attracted to me you've ever been?" },
+  { id: "truth-003", type: "prompt", category: "Truth", text: "What's a small lie you've told me, and why?" },
+  { id: "truth-004", type: "prompt", category: "Truth", text: "What's something about our relationship you'd change if you could?" },
+  { id: "truth-005", type: "prompt", category: "Truth", text: "What's your biggest insecurity about us?" },
+  { id: "truth-006", type: "prompt", category: "Truth", text: "What's a moment you fell harder for me than usual?" },
+  { id: "truth-007", type: "prompt", category: "Truth", text: "What's something you're afraid to ask me for?" },
+  { id: "truth-008", type: "prompt", category: "Truth", text: "What's the pettiest thing you've been annoyed at me for?" },
+  { id: "truth-009", type: "prompt", category: "Truth", text: "What's a jealous thought you've had about me?" },
+  { id: "truth-010", type: "prompt", category: "Truth", text: "What's something you want us to do more of in the bedroom?" },
+  { id: "truth-011", type: "prompt", category: "Truth", text: "What's the most vulnerable you've ever felt with me?" },
+  { id: "truth-012", type: "prompt", category: "Truth", text: "What's a compliment you wish I gave you more often?" },
+  { id: "truth-013", type: "prompt", category: "Truth", text: "What's something you assumed about me early on that turned out wrong?" },
+  { id: "truth-014", type: "prompt", category: "Truth", text: "What's a fear about the future of us you haven't said out loud?" },
+  { id: "truth-015", type: "prompt", category: "Truth", text: "What's the real reason you were into me at first?" },
+
+  // ---- Dare (for Truth or Dare mode — do it now, tap done when finished) ----
+  { id: "dare-001", type: "dare", category: "Dare", text: "Give each other a 10-second hug, no talking." },
+  { id: "dare-002", type: "dare", category: "Dare", text: "Send a voice message saying one thing you love about them." },
+  { id: "dare-003", type: "dare", category: "Dare", text: "Slow dance together to one song, right now." },
+  { id: "dare-004", type: "dare", category: "Dare", text: "Text them a compliment as if you were meeting for the first time." },
+  { id: "dare-005", type: "dare", category: "Dare", text: "Kiss for 5 seconds without breaking eye contact after." },
+  { id: "dare-006", type: "dare", category: "Dare", text: "Give a genuine 2-minute compliment session, taking turns." },
+  { id: "dare-007", type: "dare", category: "Dare", text: "Recreate your first photo together as best you can." },
+  { id: "dare-008", type: "dare", category: "Dare", text: "Write down 3 things you're grateful for about them and read it aloud." },
+  { id: "dare-009", type: "dare", category: "Dare", text: "Give each other a 1-minute shoulder or hand massage." },
+  { id: "dare-010", type: "dare", category: "Dare", text: "Plan your next date night together right now, down to the time." },
+  { id: "dare-011", type: "dare", category: "Dare", text: "Whisper something sweet in their ear." },
+  { id: "dare-012", type: "dare", category: "Dare", text: "Take a selfie together making your silliest face." },
+  { id: "dare-013", type: "dare", category: "Dare", text: "Tell them your favorite memory of them from this month." },
+  { id: "dare-014", type: "dare", category: "Dare", text: "Hold hands and don't let go for the next 5 minutes." },
+  { id: "dare-015", type: "dare", category: "Dare", text: "Give them a genuine compliment about something non-physical." },
+
+  // ---- Never Have I Ever (this-or-that: I have / I haven't) ----
+  { id: "nhie-001", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever pretended to like a gift.", options: ["I have", "I haven't"] },
+  { id: "nhie-002", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever gone through my partner's phone.", options: ["I have", "I haven't"] },
+  { id: "nhie-003", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever cried during a movie and denied it.", options: ["I have", "I haven't"] },
+  { id: "nhie-004", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever stalked an ex on social media.", options: ["I have", "I haven't"] },
+  { id: "nhie-005", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever pretended to be asleep to avoid a conversation.", options: ["I have", "I haven't"] },
+  { id: "nhie-006", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever forgotten an important date.", options: ["I have", "I haven't"] },
+  { id: "nhie-007", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever talked about my partner to a stranger.", options: ["I have", "I haven't"] },
+  { id: "nhie-008", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever rehearsed an apology before saying it.", options: ["I have", "I haven't"] },
+  { id: "nhie-009", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever eaten the last of something and lied about it.", options: ["I have", "I haven't"] },
+  { id: "nhie-010", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever googled my partner's name.", options: ["I have", "I haven't"] },
+  { id: "nhie-011", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever faked being sick to cancel plans.", options: ["I have", "I haven't"] },
+  { id: "nhie-012", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever kept score in an argument.", options: ["I have", "I haven't"] },
+  { id: "nhie-013", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever practiced a difficult conversation in the mirror.", options: ["I have", "I haven't"] },
+  { id: "nhie-014", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever pretended to understand something to avoid looking dumb.", options: ["I have", "I haven't"] },
+  { id: "nhie-015", type: "this-or-that", category: "Never Have I Ever", text: "Never have I ever exaggerated a story to sound more interesting.", options: ["I have", "I haven't"] },
+
+  // ---- Compatibility (scored quiz — used only by Compatibility Quiz mode) ----
+  { id: "compat-001", type: "quiz", category: "Compatibility", text: "Right now, what matters more?", options: ["Saving money", "Making memories"] },
+  { id: "compat-002", type: "quiz", category: "Compatibility", text: "In a disagreement, what do you need most?", options: ["Space to cool off", "To talk it out immediately"] },
+  { id: "compat-003", type: "quiz", category: "Compatibility", text: "What's the better weekend?", options: ["Packed with plans", "Wide open and lazy"] },
+  { id: "compat-004", type: "quiz", category: "Compatibility", text: "What matters more in a home?", options: ["Location", "Space"] },
+  { id: "compat-005", type: "quiz", category: "Compatibility", text: "What's the bigger priority long-term?", options: ["Career", "Family time"] },
+  { id: "compat-006", type: "quiz", category: "Compatibility", text: "How do you prefer to celebrate wins?", options: ["Big celebration", "Quiet acknowledgment"] },
+  { id: "compat-007", type: "quiz", category: "Compatibility", text: "What's more important in friends?", options: ["Loyalty", "Honesty"] },
+  { id: "compat-008", type: "quiz", category: "Compatibility", text: "How should big decisions get made?", options: ["Decide together, always", "Whoever knows more decides"] },
+  { id: "compat-009", type: "quiz", category: "Compatibility", text: "What's the ideal vacation?", options: ["Relax on a beach", "Explore a new city"] },
+  { id: "compat-010", type: "quiz", category: "Compatibility", text: "What's more romantic?", options: ["Thoughtful words", "Thoughtful actions"] },
+  { id: "compat-011", type: "quiz", category: "Compatibility", text: "How much alone time do you need weekly?", options: ["A little", "A lot"] },
+  { id: "compat-012", type: "quiz", category: "Compatibility", text: "What's the better way to handle finances?", options: ["Combine everything", "Keep some separate"] },
+  { id: "compat-013", type: "quiz", category: "Compatibility", text: "What matters more when choosing where to live?", options: ["Near family", "Independence"] },
+  { id: "compat-014", type: "quiz", category: "Compatibility", text: "What's a bigger relationship priority?", options: ["Stability", "Spontaneity"] },
+  { id: "compat-015", type: "quiz", category: "Compatibility", text: "How do you like conflict resolved?", options: ["Talk immediately", "Sleep on it first"] },
 ];
 
 const QUESTIONS_BY_ID = new Map(QUESTIONS.map((q) => [q.id, q]));
@@ -196,13 +264,13 @@ export function getQuestionById(id: string): Question | undefined {
   return QUESTIONS_BY_ID.get(id);
 }
 
-/** Picks a random question (optionally restricted to one type) the couple hasn't played yet,
- * reshuffling within that pool once it's exhausted. */
+/** Picks a random question (optionally restricted to a set of categories) the couple hasn't
+ * played yet, reshuffling within that pool once it's exhausted. */
 export function pickNextQuestion(
   playedQuestionIds: string[],
-  type?: QuestionType | null
+  categories?: string[] | null
 ): Question {
-  const bank = type ? QUESTIONS.filter((q) => q.type === type) : QUESTIONS;
+  const bank = categories ? QUESTIONS.filter((q) => categories.includes(q.category)) : QUESTIONS;
   const playedSet = new Set(playedQuestionIds);
   const remaining = bank.filter((q) => !playedSet.has(q.id));
   const pool = remaining.length > 0 ? remaining : bank;
@@ -215,7 +283,7 @@ export const PLAY_MODES: PlayMode[] = [
     title: "Quick Mix",
     emoji: "🎲",
     description: "A little bit of everything — endless, no set length.",
-    questionType: null,
+    categories: null,
     length: null,
   },
   {
@@ -223,7 +291,7 @@ export const PLAY_MODES: PlayMode[] = [
     title: "Rate Us",
     emoji: "⭐",
     description: "5 quick rating questions about how you're both feeling.",
-    questionType: "rating",
+    categories: ["Rate It"],
     length: 5,
   },
   {
@@ -231,7 +299,7 @@ export const PLAY_MODES: PlayMode[] = [
     title: "Would You Rather",
     emoji: "🤔",
     description: "5 rounds of this-or-that, from cozy to chaotic.",
-    questionType: "this-or-that",
+    categories: ["This or That", "Fun & Random"],
     length: 5,
   },
   {
@@ -239,7 +307,7 @@ export const PLAY_MODES: PlayMode[] = [
     title: "Quiz Us",
     emoji: "🧠",
     description: "5 questions to see how well you know each other.",
-    questionType: "quiz",
+    categories: ["About Us"],
     length: 5,
   },
   {
@@ -247,8 +315,33 @@ export const PLAY_MODES: PlayMode[] = [
     title: "Deep Talk",
     emoji: "💭",
     description: "5 open questions for a slower, more thoughtful conversation.",
-    questionType: "prompt",
+    categories: ["Deep Talk", "Future & Dreams", "Fun & Random"],
     length: 5,
+  },
+  {
+    id: "truth-or-dare",
+    title: "Truth or Dare",
+    emoji: "🔥",
+    description: "5 rounds mixing bold questions with sweet little dares.",
+    categories: ["Truth", "Dare"],
+    length: 5,
+  },
+  {
+    id: "never-have-i-ever",
+    title: "Never Have I Ever",
+    emoji: "🙈",
+    description: "5 confessions — see who's done more than they let on.",
+    categories: ["Never Have I Ever"],
+    length: 5,
+  },
+  {
+    id: "compatibility-quiz",
+    title: "Compatibility Quiz",
+    emoji: "💞",
+    description: "10 questions, one score — how in sync are you two right now?",
+    categories: ["Compatibility"],
+    length: 10,
+    scored: true,
   },
 ];
 

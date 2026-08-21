@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import {
   advanceSession,
   exitSession,
+  getSessionRounds,
+  saveCompatibilityResult,
   startSession,
   submitRoundAnswer,
   subscribeToPointer,
@@ -17,6 +19,15 @@ import { colors, radius, shadow, spacing } from "@/theme";
 import { alert } from "@/utils/alert";
 import type { GamePointer, PlayModeId, Round } from "@/types";
 
+type CompatScore = { score: number; matched: number; total: number };
+
+function compatibilityTier(score: number): string {
+  if (score >= 90) return "Soulmates 💫";
+  if (score >= 70) return "Great Match 💕";
+  if (score >= 50) return "Getting There 🌱";
+  return "Opposites Attract 🎲";
+}
+
 export default function Play() {
   const uid = useAuthStore((s) => s.firebaseUser?.uid ?? "");
   const myName = useAuthStore((s) => s.profile?.name ?? "You");
@@ -26,6 +37,8 @@ export default function Play() {
   const [pointer, setPointer] = useState<GamePointer | null | undefined>(undefined);
   const [round, setRound] = useState<Round | null>(null);
   const [busy, setBusy] = useState(false);
+  const [compatScore, setCompatScore] = useState<CompatScore | null>(null);
+  const scoredSessions = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!couple) return;
@@ -40,9 +53,37 @@ export default function Play() {
     return subscribeToRound(couple.id, pointer.currentRoundId, setRound);
   }, [couple?.id, pointer?.currentRoundId]);
 
+  const sessionFinished = Boolean(pointer?.mode && !pointer.currentRoundId && pointer.sessionTotal);
+  const finishedMode = pointer?.mode ? PLAY_MODES.find((m) => m.id === pointer.mode) : null;
+
+  useEffect(() => {
+    if (!couple || !pointer?.sessionId || !sessionFinished || !finishedMode?.scored) return;
+    if (scoredSessions.current.has(pointer.sessionId)) return;
+    scoredSessions.current.add(pointer.sessionId);
+
+    (async () => {
+      const rounds = await getSessionRounds(couple.id, pointer.sessionId!);
+      const partnerUid = partner?.uid;
+      let matched = 0;
+      let total = 0;
+      for (const r of rounds) {
+        const mine = r.answers[uid];
+        const theirs = partnerUid ? r.answers[partnerUid] : undefined;
+        if (mine && theirs) {
+          total += 1;
+          if (mine === theirs) matched += 1;
+        }
+      }
+      const score = total > 0 ? Math.round((matched / total) * 100) : 0;
+      setCompatScore({ score, matched, total });
+      await saveCompatibilityResult(couple.id, { score, matched, total });
+    })().catch(() => {});
+  }, [couple?.id, pointer?.sessionId, sessionFinished, finishedMode?.scored, partner?.uid, uid]);
+
   async function handlePickMode(modeId: PlayModeId) {
     if (!couple) return;
     setBusy(true);
+    setCompatScore(null);
     try {
       await startSession(couple.id, couple.playedQuestionIds, modeId);
     } catch (err: any) {
@@ -83,8 +124,6 @@ export default function Play() {
 
   if (pointer === undefined) return null;
 
-  const sessionFinished = Boolean(pointer?.mode && !pointer.currentRoundId && pointer.sessionTotal);
-
   // ---- Mode selector (nothing active, never played, or exited) ----
   if (!pointer?.currentRoundId && !sessionFinished) {
     return (
@@ -114,17 +153,40 @@ export default function Play() {
 
   // ---- Session complete ----
   if (sessionFinished && pointer) {
-    const mode = PLAY_MODES.find((m) => m.id === pointer.mode);
+    if (finishedMode?.scored) {
+      return (
+        <View style={styles.centered}>
+          {compatScore ? (
+            <>
+              <Text style={styles.scoreNumber}>{compatScore.score}%</Text>
+              <Text style={styles.scoreTier}>{compatibilityTier(compatScore.score)}</Text>
+              <Text style={styles.subtitle}>
+                You matched on {compatScore.matched} of {compatScore.total} questions.
+              </Text>
+            </>
+          ) : (
+            <Text style={styles.subtitle}>Scoring your answers…</Text>
+          )}
+          <Button
+            title="Play again"
+            onPress={() => pointer.mode && handlePickMode(pointer.mode)}
+            loading={busy}
+          />
+          <Button title="Choose another mode" variant="secondary" onPress={handleExit} style={styles.secondAction} />
+        </View>
+      );
+    }
+
     return (
       <View style={styles.centered}>
         <Text style={styles.emoji}>🎉</Text>
-        <Text style={styles.title}>{mode?.title} complete!</Text>
+        <Text style={styles.title}>{finishedMode?.title} complete!</Text>
         <Text style={styles.subtitle}>
           You got through all {pointer.sessionTotal} questions. Want to go again, or try
           something else?
         </Text>
         <Button
-          title={`Play ${mode?.title} again`}
+          title={`Play ${finishedMode?.title} again`}
           onPress={() => pointer.mode && handlePickMode(pointer.mode)}
           loading={busy}
         />
@@ -190,6 +252,8 @@ const styles = StyleSheet.create({
   emoji: { fontSize: 48, marginBottom: spacing.sm },
   title: { fontSize: 24, fontWeight: "800", color: colors.text, textAlign: "center" },
   subtitle: { fontSize: 14, color: colors.textMuted, textAlign: "center", marginBottom: spacing.lg },
+  scoreNumber: { fontSize: 64, fontWeight: "800", color: colors.primary },
+  scoreTier: { fontSize: 20, fontWeight: "700", color: colors.text, marginTop: 2 },
   secondAction: { marginTop: spacing.sm },
   heading: { fontSize: 22, fontWeight: "800", color: colors.text },
   subheading: { fontSize: 14, color: colors.textMuted, marginBottom: spacing.xs },

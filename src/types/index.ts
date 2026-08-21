@@ -28,7 +28,7 @@ export type Moment = {
   createdAt: number;
 };
 
-export type QuestionType = "prompt" | "this-or-that" | "rating" | "quiz";
+export type QuestionType = "prompt" | "this-or-that" | "rating" | "quiz" | "dare";
 
 export type Question = {
   id: string;
@@ -45,19 +45,29 @@ export type Round = {
   category: string;
   text: string;
   options?: string[];
-  answers: Record<string, string>; // uid -> answer (option text, rating "1"-"10", or free text)
+  answers: Record<string, string>; // uid -> answer (option text, rating "1"-"10", "done", or free text)
   createdAt: number;
+  sessionId?: string; // groups rounds played together in one mode session
 };
 
-export type PlayModeId = "quick" | "rate-us" | "would-you-rather" | "deep-talk" | "quiz-us";
+export type PlayModeId =
+  | "quick"
+  | "rate-us"
+  | "would-you-rather"
+  | "deep-talk"
+  | "quiz-us"
+  | "truth-or-dare"
+  | "never-have-i-ever"
+  | "compatibility-quiz";
 
 export type PlayMode = {
   id: PlayModeId;
   title: string;
   emoji: string;
   description: string;
-  questionType: QuestionType | null; // null = mixed, any type (quick mode)
+  categories: string[] | null; // null = mixed, any category (quick mode)
   length: number | null; // null = unlimited (quick mode)
+  scored?: boolean; // true = ends with a compatibility score instead of a plain completion screen
 };
 
 export type GamePointer = {
@@ -65,6 +75,15 @@ export type GamePointer = {
   mode: PlayModeId | null;
   sessionIndex: number; // 1-based position within the current mode session
   sessionTotal: number | null; // null = unlimited
+  sessionId: string | null;
+};
+
+export type CompatibilityResult = {
+  id: string;
+  score: number; // 0-100
+  matched: number;
+  total: number;
+  createdAt: number;
 };
 
 export type Poke = {
