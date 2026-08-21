@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { recordAppOpen } from "@/services/streak";
 import { sendPoke, subscribeToIncomingPokes } from "@/services/pokes";
 import { DdayCounter } from "@/components/DdayCounter";
 import { StreakBadge } from "@/components/StreakBadge";
+import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { colors, radius, spacing } from "@/theme";
 import { todayKey } from "@/firebase/firestore";
@@ -56,29 +58,51 @@ export default function Home() {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.greeting}>Hi {name || "there"} 👋</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Hi {name || "there"}</Text>
+        <Text style={styles.waveEmoji}>👋</Text>
+      </View>
 
       <DdayCounter anniversaryDate={couple?.anniversaryDate ?? null} />
 
       <StreakBadge count={couple?.streak.count ?? 0} bothOpenedToday={bothOpenedToday} />
 
-      <View style={styles.playCard}>
-        <Text style={styles.playTitle}>🎲 Question of the moment</Text>
-        <Text style={styles.playSubtitle}>
-          Quizzes, ratings, this-or-that, deep questions — jump into the Play tab and see how you
-          two compare.
-        </Text>
+      <Card style={styles.actionCard}>
+        <View style={styles.actionRow}>
+          <View style={[styles.iconBubble, { backgroundColor: "#EFEAFE" }]}>
+            <Ionicons name="dice" size={22} color={colors.secondary} />
+          </View>
+          <View style={styles.actionText}>
+            <Text style={styles.actionTitle}>Question of the moment</Text>
+            <Text style={styles.actionSubtitle}>
+              Quizzes, ratings, this-or-that, deep questions — see how you two compare.
+            </Text>
+          </View>
+        </View>
         <Button title="Play now" onPress={() => router.push("/(tabs)/play")} />
-      </View>
+      </Card>
 
-      <View style={styles.pokeCard}>
-        <Text style={styles.pokeTitle}>Send a little love</Text>
-        <Text style={styles.pokeSubtitle}>
-          {partner ? `Let ${partner.name} know you're thinking of them` : "Waiting for your partner to join"}
-        </Text>
+      <Card style={styles.actionCard}>
+        <View style={styles.actionRow}>
+          <View style={[styles.iconBubble, { backgroundColor: "#FFE3EC" }]}>
+            <Ionicons name="heart" size={22} color={colors.primary} />
+          </View>
+          <View style={styles.actionText}>
+            <Text style={styles.actionTitle}>Send a little love</Text>
+            <Text style={styles.actionSubtitle}>
+              {partner
+                ? `Let ${partner.name} know you're thinking of them`
+                : "Waiting for your partner to join"}
+            </Text>
+          </View>
+        </View>
         <Button title="💗 Thinking of you" onPress={handlePoke} loading={poking} disabled={!partner} />
-      </View>
+      </Card>
     </ScrollView>
   );
 }
@@ -86,25 +110,19 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing.xl },
-  greeting: { fontSize: 22, fontWeight: "800", color: colors.text },
-  playCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.sm,
+  header: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginBottom: spacing.xs },
+  greeting: { fontSize: 26, fontWeight: "800", color: colors.text },
+  waveEmoji: { fontSize: 24 },
+  actionCard: { gap: spacing.md },
+  actionRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  iconBubble: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  playTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
-  playSubtitle: { fontSize: 13, color: colors.textMuted },
-  pokeCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.sm,
-  },
-  pokeTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
-  pokeSubtitle: { fontSize: 13, color: colors.textMuted },
+  actionText: { flex: 1, gap: 2 },
+  actionTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
+  actionSubtitle: { fontSize: 12.5, color: colors.textMuted, lineHeight: 17 },
 });

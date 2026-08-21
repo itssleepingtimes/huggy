@@ -1,5 +1,5 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, type ViewStyle } from "react-native";
-import { colors, radius, spacing } from "@/theme";
+import { colors, radius, shadow, spacing } from "@/theme";
 
 type Props = {
   title: string;
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  primary: { backgroundColor: colors.primary },
-  secondary: { backgroundColor: colors.secondary },
+  primary: { backgroundColor: colors.primary, ...shadow.card },
+  secondary: { backgroundColor: colors.secondary, ...shadow.card },
   ghost: { backgroundColor: "transparent" },
   disabled: { opacity: 0.5 },
   pressed: { opacity: 0.85 },

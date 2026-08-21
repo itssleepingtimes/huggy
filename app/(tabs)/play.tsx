@@ -13,7 +13,7 @@ import {
 import { PLAY_MODES } from "@/data/questions";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
-import { colors, radius, spacing } from "@/theme";
+import { colors, radius, shadow, spacing } from "@/theme";
 import { alert } from "@/utils/alert";
 import type { GamePointer, PlayModeId, Round } from "@/types";
 
@@ -281,6 +281,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.md,
+    ...shadow.card,
   },
   modeEmoji: { fontSize: 32 },
   modeTitle: { fontSize: 16, fontWeight: "700", color: colors.text },
@@ -300,6 +301,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     gap: spacing.md,
+    ...shadow.card,
   },
   category: { fontSize: 12, fontWeight: "700", color: colors.secondary, textTransform: "uppercase" },
   question: { fontSize: 20, fontWeight: "700", color: colors.text, lineHeight: 27 },

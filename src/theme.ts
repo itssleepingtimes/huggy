@@ -25,3 +25,20 @@ export const radius = {
   lg: 22,
   pill: 999,
 };
+
+export const shadow = {
+  card: {
+    shadowColor: "#3A1F2B",
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  raised: {
+    shadowColor: "#3A1F2B",
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
+  },
+};

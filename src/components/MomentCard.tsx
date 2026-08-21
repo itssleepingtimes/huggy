@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors, radius, spacing } from "@/theme";
+import { colors, radius, shadow, spacing } from "@/theme";
 import { timeAgo } from "@/utils/time";
 import type { Moment } from "@/types";
 
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     gap: spacing.xs,
+    ...shadow.card,
   },
   text: { fontSize: 15, color: colors.text, lineHeight: 21 },
   meta: { fontSize: 11, color: colors.textMuted },

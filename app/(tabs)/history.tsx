@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCoupleStore } from "@/store/useCoupleStore";
 import { subscribeToHistory } from "@/services/rounds";
-import { colors, radius, spacing } from "@/theme";
+import { colors, radius, shadow, spacing } from "@/theme";
 import { timeAgo } from "@/utils/time";
 import type { Round } from "@/types";
 
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     gap: spacing.xs,
+    ...shadow.card,
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   category: { fontSize: 11, fontWeight: "700", color: colors.secondary, textTransform: "uppercase" },

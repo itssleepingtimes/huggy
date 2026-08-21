@@ -6,7 +6,7 @@ import { addMoment, subscribeToMoments } from "@/services/moments";
 import { MomentCard } from "@/components/MomentCard";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
-import { colors, radius, spacing } from "@/theme";
+import { colors, radius, shadow, spacing } from "@/theme";
 import { alert } from "@/utils/alert";
 import type { Moment } from "@/types";
 
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     marginBottom: spacing.lg,
     gap: spacing.sm,
+    ...shadow.card,
   },
   empty: { textAlign: "center", color: colors.textMuted, marginTop: spacing.xl },
 });
